@@ -1,0 +1,18 @@
+data_dir: "data"
+env_file: "environmental_data.csv"
+
+batch_size: 32
+epochs: 100
+lr: 0.0005
+n_splits: 5
+
+emb_dim: 64
+attn_dim: 64
+hidden_dim: 128
+num_heads: 4
+dropout: 0.2
+
+lambda_ce: 0.5
+lambda_cl: 0.3
+lambda_rec: 0.2
+
