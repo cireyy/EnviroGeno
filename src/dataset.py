@@ -33,11 +33,19 @@ def create_condition_labels(env_df: pd.DataFrame):
     ).astype(int)
     smoking = env_df["Smoking"].fillna(0).astype(int)
     anxious = env_df["Anxious"].fillna(0).astype(int)
-    combined = list(zip(bmi_bins, alcohol_bins, activity_bins, sleep_bins, smoking, anxious))
-    unique_map = {v: i for i, v in enumerate(set(combined))}
-    condition_labels = [unique_map[x] for x in combined]
+    combined = np.column_stack([
+        bmi_bins.to_numpy(dtype=np.int64, copy=False),
+        alcohol_bins.to_numpy(dtype=np.int64, copy=False),
+        activity_bins.to_numpy(dtype=np.int64, copy=False),
+        sleep_bins.to_numpy(dtype=np.int64, copy=False),
+        smoking.to_numpy(dtype=np.int64, copy=False),
+        anxious.to_numpy(dtype=np.int64, copy=False),
+    ])
 
-    return np.array(condition_labels)
+    # Ensure deterministic label assignment irrespective of hashing order
+    _, condition_labels = np.unique(combined, axis=0, return_inverse=True)
+
+    return condition_labels.astype(np.int64)
 
 
 class GenomicDataset(Dataset):
